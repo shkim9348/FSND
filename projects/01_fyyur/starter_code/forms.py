@@ -219,8 +219,6 @@ class ArtistForm(Form):
      )
     facebook_link = StringField(
         # TODO implement enum restriction
-        # ???
-        # refer to https://github.com/udacity/FSND/issues/23
         'facebook_link', validators=[URL()]
      )
 

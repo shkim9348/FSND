@@ -166,7 +166,11 @@ def delete_venue(venue_id):
 def artists():
   # TODO: replace with real data returned from querying the database
 
-  data = Artist.query.all()
+  artists = Artist.query.all()
+
+  data = []
+  for artist in artists:
+      data.append({"id": artist.id, "name": artist.name})
 
   return render_template('pages/artists.html', artists=data)
 
@@ -292,7 +296,6 @@ def create_artist_submission():
       flash('Some errors occurred: ' + ",".join(errors), category="warning")
 
   return render_template('forms/new_artist.html', form=form)
-
 
 #  Shows
 #  ----------------------------------------------------------------
