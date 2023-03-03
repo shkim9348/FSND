@@ -212,8 +212,6 @@ class ArtistForm(Form):
     genres = SelectMultipleField(
         'genres', validators=[DataRequired()],
         choices=[
-            # for readibility in form
-            # not (value, name) but (value, value)
             (genre.value, genre.value) for genre in GenresEnum
         ]
      )
