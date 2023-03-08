@@ -53,7 +53,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(len(data["categories"]), 6)
         self.assertEqual(data["categories"]["4"], "History")
 
-    def test_404_available_categories(self):
+        # 404, check not found the category
         response = self.client().get('/categories/500')
         self.assertEqual(response.status_code, 404)
 
@@ -61,21 +61,18 @@ class TriviaTestCase(unittest.TestCase):
         response = self.client().get('/questions')
         self.assertEqual(response.status_code, 200)
 
-        data = json.loads(response.data)
-
-    def test_404_list_question(self):
+        # 404, check not found the page
         response = self.client().get('/questions?page=500')
         self.assertEqual(response.status_code, 404)
 
     def test_delete_question(self):
         # create a question to delete
-        question = Question(question="add question", answer="add answer", category=1, difficulty=1)
+        question = Question(question="new question", answer="new answer", category=1, difficulty=1)
         question.insert()
         question_id = question.id
 
         # delete the question
         response = self.client().delete(f'/questions/{question_id}')
-        data = json.loads(response.data)
         self.assertEqual(response.status_code, 200)
 
         # check if the question has been deleted
@@ -87,61 +84,58 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_create_question(self):
-        add_question = {
-            'question': 'add question',
-            'answer': 'add answer',
+        new_question = {
+            'question': 'new question',
+            'answer': 'new answer',
             'category': 1,
             'difficulty': 1
         }
     
         # Sends POST request with the new question as JSON payload
-        response = self.client().post('/questions', json=add_question)
-        data = json.loads(response.data)
+        response = self.client().post('/questions', json=new_question)
     
         # Asserts that the new question is successfully created
         self.assertEqual(response.status_code, 200)
 
-    def test_400_create_question(self):
-        add_question = {
-            'question': 'add question',
-            'answer': 'add answer',
-            'categoty': 1,
+        # 400, invalid category
+        new_question = {
+            'question': 'new question',
+            'answer': 'new answer',
+            'categoty': 100,
+            'difficulty': 1,
         }
 
-        response = self.client().post('questions', json=add_question)
-        data = json.loads(response.data)
-
+        response = self.client().post('questions', json=new_question)
         self.assertEqual(response.status_code, 400)
 
     def test_search_questions(self):
         search_q = {'searchTerm': 'a'}
 
         response = self.client().post('/questions/search', json=search_q)
-        data = json.loads(response.data)
-
         self.assertEqual(response.status_code, 200)
 
     def test_category_questions(self):
         response = self.client().get('/categories/1/questions')
-        data = json.loads(response.data)
-
         self.assertEqual(response.status_code, 200)
+
+        # 404, invalid categoty_id
+        response = self.client().get('/categories/1000/questions')
+        self.assertEqual(response.status_code, 404)
+        self.assertIn("Not Found", response.data.decode())
 
     def test_quizzes(self):
         new_quiz = {'previous_questions': [], 'quiz_category': {'type': 'Science', 'id': 1}}
 
         response = self.client().post('/quizzes', json=new_quiz)
-        data = json.loads(response.data)
-
         self.assertEqual(response.status_code, 200)
+
+        data = json.loads(response.data)
         self.assertIn('question', data)
 
-    def test_400_quizzes(self):
+        # 400, not input id
         new_quiz = {'previous_questions': [], 'quiz_category': {'type': 'Science', }}
 
         response = self.client().post('/quizzes', json=new_quiz)
-        data = json.loads(response.data)
-
         self.assertEqual(response.status_code, 400)
 
 # Make the tests conveniently executable
