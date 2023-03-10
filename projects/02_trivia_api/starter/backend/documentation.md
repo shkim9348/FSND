@@ -1,6 +1,6 @@
 # Documentating Endpoints
 
-## GET '/api/v1.0/categories'
+## GET '/categories'
 
 Description: Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category  
 Request Arguments: None  
@@ -25,20 +25,21 @@ Returns: An object with 10 paginated questions, total questions, object includin
     'questions': [  
         {  
             'id': 1,  
-            'question': 'This is a question',  
-            'answer': 'This is an answer',  
-            'difficulty': 5,  
-            'category': 2  
+            'question': 'The question',  
+            'answer': 'The answer',  
+            'difficulty': 1,  
+            'category': 1  
         },  
     ],  
     'totalQuestions': 100,  
-    'categories': { '1' : "Science",  
+    'categories': {  
+    '1' : "Science",  
     '2' : "Art",  
     '3' : "Geography",  
     '4' : "History",  
     '5' : "Entertainment",  
     '6' : "Sports" },  
-    'currentCategory': 'History'  
+    'currentCategory': 'Science'  
 }
 ```
 
@@ -51,14 +52,14 @@ Returns: An object with questions for the specified category, total questions, a
     'questions': [  
         {  
             'id': 1,  
-            'question': 'This is a question',  
-            'answer': 'This is an answer',  
-            'difficulty': 5,  
-            'category': 4  
+            'question': 'The question',  
+            'answer': 'The answer',  
+            'difficulty': 1,  
+            'category': 1  
         },  
     ],  
     'totalQuestions': 100,  
-    'currentCategory': 'History'  
+    'currentCategory': 'Science'  
 }
 ```
 
@@ -94,14 +95,14 @@ Returns: any array of questions, a number of totalQuestions that met the search 
     'questions': [  
         {  
             'id': 1,  
-            'question': 'This is a question',  
-            'answer': 'This is an answer',  
-            'difficulty': 5,  
-            'category': 5  
+            'question': 'The question',  
+            'answer': 'The answer',  
+            'difficulty': 1,  
+            'category': 1  
         },  
     ],  
     'totalQuestions': 100,  
-    'currentCategory': 'Entertainment'  
+    'currentCategory': 'Science'  
 }
 ```
 
@@ -115,10 +116,10 @@ Returns: a single new question object at random
 {  
     'question': {  
         'id': 1,  
-        'question': 'This is a question',  
-        'answer': 'This is an answer',  
-        'difficulty': 5,  
-        'category': 4  
+        'question': 'The question',  
+        'answer': 'The answer',  
+        'difficulty': 1,  
+        'category': 1  
     }  
 }  
 ```
