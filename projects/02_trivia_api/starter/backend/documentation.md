@@ -2,124 +2,206 @@
 
 ## GET '/categories'
 
-Description: Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category  
-Request Arguments: None  
-Returns: An object with a single key, categories, that contains an object of id: category_string key: value pairs.  
+* Description: Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category  
+* Returns: Categories, that contains an object of id
+
 ```
-{  
-  "1": "Science",  
-  "2": "Art",  
-  "3": "Geography",  
-  "4": "History",  
-  "5": "Entertainment",  
-  "6": "Sports"  
+{
+  "categories": {
+    "1": "Science",
+    "2": "Art",
+    "3": "Geography",
+    "4": "History",
+    "5": "Entertainment",
+    "6": "Sports"
+  }
 }
 ```
 
-## GET '/questions?page=${integer}'
-Description: Fetches a paginated set of questions, a total number of questions, all categories and current category string.  
-Request Arguments: page - integer  
-Returns: An object with 10 paginated questions, total questions, object including all categories, and current category string  
+## GET '/questions?page=<integer>'
+
+* Description: Fetches a paginated set of questions, a total number of questions, all categories and current category string.  
+* Test: Enter a command at the terminal
+
 ```
-{  
-    'questions': [  
-        {  
-            'id': 1,  
-            'question': 'The question',  
-            'answer': 'The answer',  
-            'difficulty': 1,  
-            'category': 1  
-        },  
-    ],  
-    'totalQuestions': 100,  
-    'categories': {  
-    '1' : "Science",  
-    '2' : "Art",  
-    '3' : "Geography",  
-    '4' : "History",  
-    '5' : "Entertainment",  
-    '6' : "Sports" },  
-    'currentCategory': 'Science'  
+~ curl http://127.0.0.1:5000/questions\?page\=1
+```
+
+* Returns: An object with 10 paginated questions, total questions, object including all categories, and current category string
+
+```
+{
+  "categories": {
+    "1": "Science",
+    "2": "Art",
+    "3": "Geography",
+    "4": "History",
+    "5": "Entertainment",
+    "6": "Sports"
+  },
+  "current_category": null,
+  "questions": [
+    {
+      "answer": "Scarab",
+      "category": 4,
+      "difficulty": 4,
+      "id": 23,
+      "question": "Which dung beetle was worshipped by the ancient Egyptians?"
+    },
+    {
+      "answer": "Blood",
+      "category": 1,
+      "difficulty": 4,
+      "id": 22,
+      "question": "Hematology is a branch of medicine involving the study of what?"
+    },
+    ...
+    {
+      "answer": "The Palace of Versailles",
+      "category": 3,
+      "difficulty": 3,
+      "id": 14,
+      "question": "In which royal palace would you find the Hall of Mirrors?"
+    }
+  ],
+  "total_questions": 19
 }
 ```
 
-## GET '/categories/${id}/questions'
-Description: Fetches questions for a cateogry specified by id request argument  
-Request Arguments: id - integer  
-Returns: An object with questions for the specified category, total questions, and current category string  
+## GET '/categories/[id]/questions'
+
+* Description: Fetches questions for a cateogry specified by id request argument  
+* Test: Enter a command at the terminal
+
 ```
-{  
-    'questions': [  
-        {  
-            'id': 1,  
-            'question': 'The question',  
-            'answer': 'The answer',  
-            'difficulty': 1,  
-            'category': 1  
-        },  
-    ],  
-    'totalQuestions': 100,  
-    'currentCategory': 'Science'  
+~ curl http://127.0.0.1:5000/categories/5/questions
+```
+
+* Returns: An object with questions for current cateogry, questions in current cateogry and total questions
+
+```
+{
+  "current_category": "Entertainment",
+  "questions": [
+    {
+      "answer": "Apollo 13",
+      "category": 5,
+      "difficulty": 4,
+      "id": 2,
+      "question": "What movie earned Tom Hanks his third straight Oscar nomination, in 1996?"
+    },
+    {
+      "answer": "Tom Cruise",
+      "category": 5,
+      "difficulty": 4,
+      "id": 4,
+      "question": "What actor did author Anne Rice first denounce, then praise in the role of her beloved Lestat?"
+    },
+    {
+      "answer": "Edward Scissorhands",
+      "category": 5,
+      "difficulty": 3,
+      "id": 6,
+      "question": "What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?"
+    }
+  ],
+  "total_questions": 3
 }
 ```
 
 ## DELETE '/questions/${id}'
-Description: Deletes a specified question using the id of the question  
-Request Arguments: id - integer  
-Returns: Does not need to return anything besides the appropriate HTTP status code. Optionally can return the id of the question. If you are able to modify the frontend, you can have it remove the question using the id instead of refetching the questions.
+
+* Description: Deletes a specified question using the id of the question  
+* Returns: Does not need to return anything besides the appropriate HTTP status code. Optionally can return the id of the question. If you are able to modify the frontend, you can have it remove the question using the id instead of refetching the questions.
 
 ## POST '/questions'
-Description: Sends a post request in order to add a new question  
-Request Body:  
-```
-{  
-    'question':  'new question',  
-    'answer':  'new answer',  
-    'difficulty': 1,  
-    'category': 1,  
-}  
-```
-Returns: Does not return any new data
 
-## POST '/questions'
-Description: Sends a post request in order to search for a specific question by search term  
-Request Body:  
+* Description: Sends a post request in order to add a new question  
+* Test: Enter a command at the terminal
+
 ```
-{  
-    'searchTerm': 'this is the term the user is looking for'  
-}  
+~ curl -X POST http://127.0.0.1:5000/questions -H "Content-Type: application/json" -d '{"question": "new q", "answer": "new a", "difficulty": 1, "category": 1}'
 ```
-Returns: any array of questions, a number of totalQuestions that met the search term and the current category string  
+
+* Returns: {}
+* Results: A new question added.(total questions: 19 to 20)
+
 ```
-{  
-    'questions': [  
-        {  
-            'id': 1,  
-            'question': 'The question',  
-            'answer': 'The answer',  
-            'difficulty': 1,  
-            'category': 1  
-        },  
-    ],  
-    'totalQuestions': 100,  
-    'currentCategory': 'Science'  
+{
+  "categories": {
+    "1": "Science",
+    "2": "Art",
+    "3": "Geography",
+    "4": "History",
+    "5": "Entertainment",
+    "6": "Sports"
+  },
+  "current_category": null,
+  "questions": [
+    {
+      "answer": "new a",
+      "category": 1,
+      "difficulty": 1,
+      "id": 24,
+      "question": "new q"
+    },
+    ...
+    {
+      "answer": "Agra",
+      "category": 3,
+      "difficulty": 2,
+      "id": 15,
+      "question": "The Taj Mahal is located in which Indian city?"
+    }
+  ],
+  "total_questions": 20
+}
+```
+
+## POST '/questions/search'
+
+* Description: Sends a post request in order to search for a specific question by search term  
+* Test: Enter a command at the terminal
+
+```
+~ curl -X POST http://127.0.0.1:5000/questions/search -H "Content-Type: application/json" -d '{"searchTerm": "branch"}'
+```
+
+* Returns: any array of questions, a number of totalQuestions that met the search term and the current category string
+
+```
+{
+  "current_category": null,
+  "questions": [
+    {
+      "answer": "Blood",
+      "category": 1,
+      "difficulty": 4,
+      "id": 22,
+      "question": "Hematology is a branch of medicine involving the study of what?"
+    }
+  ],
+  "total_questions": 1
 }
 ```
 
 ## POST '/quizzes'
+
 Description: Sends a post request in order to get the random next question  
-Request Body:  
-{'previous_questions':  an array of question id's such as [1, 4, 20, 15]  
-'quiz_category': a string of the current category }  
-Returns: a single new question object at random  
+* Test: Enter a command at the terminal
 ```
-{  
-    'question': {  
-        'id': 1,  
-        'question': 'The question',  
-        'answer': 'The answer',  
-        'difficulty': 1,  
-        'category': 1  
-    }  
-}  
+~ curl -X POST http://localhost:5000/quizzes -H "Content-Type: application/json" -d '{"previous_questions":[], "quiz_category":{"id":1}}'
+```
+* Returns: a single new question object at random
+
+```
+{
+  "question": {
+    "answer": "Alexander Fleming",
+    "category": 1,
+    "difficulty": 3,
+    "id": 21,
+    "question": "Who discovered penicillin?"
+  }
+}
 ```
