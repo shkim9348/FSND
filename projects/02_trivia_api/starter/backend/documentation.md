@@ -3,6 +3,12 @@
 ## GET '/categories'
 
 * Description: Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category  
+* Test: Enter a command at the terminal
+
+```
+~ curl http://127.0.0.1:5000/categories
+```
+
 * Returns: Categories, that contains an object of id
 
 ```
@@ -18,7 +24,7 @@
 }
 ```
 
-## GET '/questions?page=<integer>'
+## GET '/questions?page=integer'
 
 * Description: Fetches a paginated set of questions, a total number of questions, all categories and current category string.  
 * Test: Enter a command at the terminal
@@ -109,10 +115,19 @@
 }
 ```
 
-## DELETE '/questions/${id}'
+## DELETE '/questions/[id]'
 
 * Description: Deletes a specified question using the id of the question  
+* Test: Enter a command at the terminal
+```
+~ curl -X DELETE http://localhost:5000/questions/26
+```
 * Returns: Does not need to return anything besides the appropriate HTTP status code. Optionally can return the id of the question. If you are able to modify the frontend, you can have it remove the question using the id instead of refetching the questions.
+```
+{
+  "id": 26
+}
+```
 
 ## POST '/questions'
 
