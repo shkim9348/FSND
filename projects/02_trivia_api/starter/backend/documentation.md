@@ -5,9 +5,7 @@
 * Description: Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category  
 * Test: Enter a command at the terminal
 
-```
-~ curl http://127.0.0.1:5000/categories
-```
+`~ curl http://127.0.0.1:5000/categories`
 
 * Returns: Categories, that contains an object of id
 
@@ -29,9 +27,7 @@
 * Description: Fetches a paginated set of questions, a total number of questions, all categories and current category string.  
 * Test: Enter a command at the terminal
 
-```
-~ curl http://127.0.0.1:5000/questions\?page\=1
-```
+`~ curl http://127.0.0.1:5000/questions\?page\=1`
 
 * Returns: An object with 10 paginated questions, total questions, object including all categories, and current category string
 
@@ -79,9 +75,7 @@
 * Description: Fetches questions for a cateogry specified by id request argument  
 * Test: Enter a command at the terminal
 
-```
-~ curl http://127.0.0.1:5000/categories/5/questions
-```
+`~ curl http://127.0.0.1:5000/categories/5/questions`
 
 * Returns: An object with questions for current cateogry, questions in current cateogry and total questions
 
@@ -119,10 +113,11 @@
 
 * Description: Deletes a specified question using the id of the question  
 * Test: Enter a command at the terminal
-```
-~ curl -X DELETE http://localhost:5000/questions/26
-```
+
+`~ curl -X DELETE http://localhost:5000/questions/26`
+
 * Returns: Does not need to return anything besides the appropriate HTTP status code. Optionally can return the id of the question. If you are able to modify the frontend, you can have it remove the question using the id instead of refetching the questions.
+
 ```
 {
   "id": 26
@@ -134,9 +129,7 @@
 * Description: Sends a post request in order to add a new question  
 * Test: Enter a command at the terminal
 
-```
-~ curl -X POST http://127.0.0.1:5000/questions -H "Content-Type: application/json" -d '{"question": "new q", "answer": "new a", "difficulty": 1, "category": 1}'
-```
+`~ curl -X POST http://127.0.0.1:5000/questions -H "Content-Type: application/json" -d '{"question": "new q", "answer": "new a", "difficulty": 1, "category": 1}'`
 
 * Returns: {}
 * Results: A new question added.(total questions: 19 to 20)
@@ -178,9 +171,7 @@
 * Description: Sends a post request in order to search for a specific question by search term  
 * Test: Enter a command at the terminal
 
-```
-~ curl -X POST http://127.0.0.1:5000/questions/search -H "Content-Type: application/json" -d '{"searchTerm": "branch"}'
-```
+`~ curl -X POST http://127.0.0.1:5000/questions/search -H "Content-Type: application/json" -d '{"searchTerm": "branch"}'`
 
 * Returns: any array of questions, a number of totalQuestions that met the search term and the current category string
 
@@ -202,11 +193,11 @@
 
 ## POST '/quizzes'
 
-Description: Sends a post request in order to get the random next question  
+* Description: Sends a post request in order to get the random next question  
 * Test: Enter a command at the terminal
-```
-~ curl -X POST http://localhost:5000/quizzes -H "Content-Type: application/json" -d '{"previous_questions":[], "quiz_category":{"id":1}}'
-```
+
+`~ curl -X POST http://localhost:5000/quizzes -H "Content-Type: application/json" -d '{"previous_questions":[], "quiz_category":{"id":1}}'`
+
 * Returns: a single new question object at random
 
 ```
