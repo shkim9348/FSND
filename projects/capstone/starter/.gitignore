@@ -1,0 +1,24 @@
+# Node.js dependencies
+/frontend/node_modules/
+
+# Python virtual environment
+/backend/venv/
+
+# Frontend build and cache directories
+/frontend/pybo/.next/
+/frontend/pybo/out/
+
+# Backend cache directories
+/backend/__pycache__/
+
+# Environment variables and secrets
+*.env
+
+# IDE configuration files
+.vscode/
+.idea/
+
+
+#sqllite
+*.db
+
