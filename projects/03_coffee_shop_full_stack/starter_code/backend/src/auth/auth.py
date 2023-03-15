@@ -141,7 +141,7 @@ def verify_decode_jwt(token):
         raise AuthError({
             "code": "invalid_header",
             "description": "Unable to find the appropriate key."
-        }, 401)
+        }, 403)
 
     # it should decode the payload from the token
     try:
@@ -169,7 +169,7 @@ def verify_decode_jwt(token):
         raise AuthError({
             "code": "invalid_header",
             "description": "Unable to parse authentication token.",
-        }, 400)
+        }, 401)
 
     # it should validate the claims
     if payload.get("aud") != API_AUDIENCE or payload.get("iss") != iss:

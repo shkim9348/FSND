@@ -83,7 +83,9 @@ def create_drink(payload):
         ]
     }
     """
-
+    print('-------------')
+    print("abc")
+    print('-------------')
     data = request.get_json()
     title = data.get("title")
     recipe = data.get("recipe")
