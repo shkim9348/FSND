@@ -8,6 +8,7 @@ class Config(object):
     TESTING = False
     CSRF_ENABLED = True
     SECRET_KEY = os.urandom(32)
+    JSON_AS_ASCII = False
 
 
 class DevelopmentConfig(Config):
@@ -15,6 +16,7 @@ class DevelopmentConfig(Config):
     database_name = "pybo.db"
     database_path = "sqlite:///{}".format(os.path.join(basedir, database_name))
     SQLALCHEMY_DATABASE_URI = database_path
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
 class TestingConfig(Config):
@@ -22,10 +24,11 @@ class TestingConfig(Config):
     database_name = "pybo_test.db"
     database_path = "sqlite:///{}".format(os.path.join(basedir, database_name))
     SQLALCHEMY_DATABASE_URI = database_path
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
 class Auth(object):
-    AUTH0_DOMAIN = "dev-ka6gmvkeo7lnrjzv.us.auth0.com"
+    AUTH0_DOMAIN = "dev-hwgb8d1f3r3ztqaq.us.auth0.com"
     ALGORITHMS = ["RS256"]
     API_AUDIENCE = "pybo"
 

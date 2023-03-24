@@ -5,6 +5,9 @@ from .database.models import setup_db
 from config import app_config
 from .auth.auth import AuthError
 
+import logging
+
+log = logging.getLogger(__name__)
 
 def create_app():
     app = Flask(__name__)
@@ -18,8 +21,9 @@ def create_app():
 
     CORS(app)
     setup_db(app)
-    from .views import main_views
 
+    # Blueprint
+    from .views import main_views
     app.register_blueprint(main_views.bp)
 
     """
