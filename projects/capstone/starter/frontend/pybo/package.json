@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build & next export",
     "start": "next start"
   },
   "dependencies": {
@@ -10,6 +10,7 @@
     "next": "latest",
     "react": "18.2.0",
     "react-bootstrap": "^2.7.2",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "swr": "^2.1.1"
   }
 }

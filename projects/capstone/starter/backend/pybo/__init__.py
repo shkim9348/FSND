@@ -19,6 +19,7 @@ def create_app():
     else:
         app.config.from_object(app_config["testing"])
 
+    # CORS
     CORS(app)
     setup_db(app)
 

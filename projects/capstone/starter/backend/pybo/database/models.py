@@ -55,6 +55,40 @@ question_voter = db.Table(
     ),
 )
 
+
+class Question(BaseModel):
+    id = db.Column(db.Integer, primary_key=True)
+    subject = db.Column(db.String(200), nullable=False)
+    content = db.Column(db.Text(), nullable=False)
+    create_date = db.Column(db.DateTime(), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
+    user = db.relationship("User", backref=db.backref("question_set"))
+    modify_date = db.Column(db.DateTime(), nullable=True)
+
+    voter = db.relationship(
+        "User",
+        secondary=question_voter,
+        backref=db.backref("question_voter_set"),
+    )
+
+    def __init__(self, subject, content, create_date, user):
+        self.subject = subject
+        self.content = content
+        self.create_date = create_date
+        self.user = user
+
+    def as_dict(self):
+        return {
+            "id": self.id,
+            "subject": self.subject,
+            "content": self.content,
+            "answer_set": [a.as_dict() for a in self.answer_set],
+            "user": self.user.as_dict(),
+            "create_date": self.create_date,
+            "modify_date": self.modify_date,
+        }
+
+
 answer_voter = db.Table(
     "answer_voter",
     db.Column(
@@ -72,46 +106,6 @@ answer_voter = db.Table(
 )
 
 
-class Question(BaseModel):
-    __tablename__ = "question"
-
-    id = db.Column(db.Integer, primary_key=True)
-    subject = db.Column(db.String(200), nullable=False)
-    content = db.Column(db.Text(), nullable=False)
-    create_date = db.Column(db.DateTime(), nullable=False, default=datetime.now())
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
-    modify_date = db.Column(db.DateTime(), nullable=True)
-    pinned = db.Column(db.Boolean())
-
-    voter = db.relationship(
-        "User", secondary=question_voter, backref=db.backref("question_voter_set")
-    )
-    user = db.relationship("User", backref=db.backref("question_set"))
-
-    # 답변도 조회할 수 있도록 수정해야할 듯 함.
-
-    def __init__(self, subject, content, user_id, pinned):
-        self.subject = subject
-        self.content = content
-        self.create_date = datetime.now()
-        self.user_id = user_id
-        self.pinned = pinned
-
-    def as_dict(self):
-        return {
-            "id": self.id,
-            "subject": self.subject,
-            "content": self.content,
-            "create_date": self.create_date,
-            "user_id": self.user_id,
-            "modify_date": self.modify_date,
-            "pinned": self.pinned,
-            "voter": self.voter,
-            "user": self.user.as_dict() if self.user else None,
-            "answer_set": [str(answer) for answer in self.answer_set],
-        }
-
-
 class Answer(BaseModel):
     id = db.Column(db.Integer, primary_key=True)
     question_id = db.Column(db.Integer, db.ForeignKey("question.id", ondelete="CASCADE"))
@@ -124,26 +118,18 @@ class Answer(BaseModel):
 
     voter = db.relationship("User", secondary=answer_voter, backref=db.backref("answer_voter_set"))
 
-    def __str__(self):
-        return f"Answer(id={self.id}, question_id={self.question_id}, content={self.content}, create_date={self.create_date}, user_id={self.user_id}, modify_date={self.modify_date})"
-
     def __init__(self, question, content, user_id):
         self.question = question
         self.content = content
-        self.create_date = datetime.now()
         self.user_id = user_id
 
     def as_dict(self):
         return {
             "id": self.id,
-            "question_id": self.question_id,
-            "question": self.question,
             "content": self.content,
-            # "create_date": self.create_date,
-            "user_id": self.user_id,
-            "user": self.user.as_dict() if self.user else None,
-            # "modify_date": self.modify_date,
-            "voter": self.voter,
+            "user": self.user.as_dict(),
+            "create_date": self.create_date,
+            "modify_date": self.modify_date,
         }
 
 
@@ -154,6 +140,5 @@ class User(db.Model):
 
     def as_dict(self):
         return {
-            "id": self.id,
             "username": self.username,
         }
