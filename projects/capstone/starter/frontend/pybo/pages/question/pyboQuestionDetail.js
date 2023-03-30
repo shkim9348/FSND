@@ -3,13 +3,16 @@ import { useRouter } from "next/router";
 import useSWR from "swr";
 import PyboNavBar from "../../components/pyboNavBar";
 import {useState} from "react";
+import Head from "next/head";
 
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
 export default function PyboQuestionDetail() {
+  // useRouter
   const router = useRouter();
   const questionId = router.query["question_id"];
 
+  // fetch the data
   const { data, error } = useSWR(`http://127.0.0.1:5000/question/detail/${questionId}/`, fetcher);
 
   const [answerContent, setAnswerContent] = useState("");
@@ -20,9 +23,25 @@ export default function PyboQuestionDetail() {
 
     const newAnswer = {
       content: answerContent,
+      user_id: 1,
     };
 
-    setAnswerSet([...answerSet, newAnswer]);
+    fetch(`http://127.0.0.1:5000/answer/create/${questionId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newAnswer),
+      })
+      .then(response => response.json())
+      .then(data => {
+        // 서버로부터 응답이 성공적으로 돌아왔을 때 처리할 코드 작성
+        console.log(data);
+      })
+      .catch(error => {
+        // 서버로부터 응답이 실패했을 때 처리할 코드 작성
+        console.error(error);
+      });
 
     setAnswerContent("");
   };
@@ -35,6 +54,9 @@ export default function PyboQuestionDetail() {
 
   return (
     <>
+      <Head>
+        <title>{question.subject}</title>
+      </Head>
       <PyboNavBar />
       <Container>
         <h2 className="border-bottom py-2">{question.subject}</h2>

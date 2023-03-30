@@ -4,7 +4,7 @@ export default function PyboNavBar() {
   return (
     <Navbar bg="light" variant="light" expand="lg" className="border-bottom">
       <Container fluid>
-        <Navbar.Brand href="/">Pybo</Navbar.Brand>
+        <Navbar.Brand href="http://localhost:3000/">Pybo</Navbar.Brand>
         <Nav className="me-auto">
           <Nav.Item>
             <Nav.Link href="/">Sign up</Nav.Link>
