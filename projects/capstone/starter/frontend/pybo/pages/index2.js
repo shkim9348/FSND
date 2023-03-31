@@ -1,11 +1,75 @@
 import Head from "next/head";
+import { useEffect, useRef, useState } from "react";
+import useSWR from "swr";
 import { Container, Row, Col, Button, InputGroup, Table } from "react-bootstrap";
 import styles from "../styles/Home.module.css";
 import PyboNavBar from "../components/pyboNavBar";
 import Link from "next/link";
+import { useRouter } from "next/router";
+
+const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
 export default function Home() {
-  const data = { questions: [], page_nums: [] };
+  // useRouter
+  const router = useRouter();
+
+  // pageIndex
+  const storedPage = typeof window !== "undefined" && localStorage.getItem("pageIndex");
+  const [pageIndex, setPageIndex] = useState(storedPage || 1);
+
+  // search keyword
+  const [searchKw, setSearchKw] = useState("");
+
+  // kw
+  const storedKw = typeof window !== "undefined" && localStorage.getItem("searchKw");
+  const [kw, setKw] = useState(storedKw || "")
+
+  // fetch the data
+  const { data, error } = useSWR(
+    `http://127.0.0.1:5000/question/list?page=${pageIndex}&kw=${kw}`,
+    fetcher,
+    { keepPreviousData: true },
+  );
+
+  // set page change
+  const handlePageChange = (pageIndex) => {
+    // Update state
+    setPageIndex(pageIndex);
+
+    // router
+    router.push({ query: { page: pageIndex } });
+
+    // Save storage
+    localStorage.setItem("pageIndex", pageIndex);
+  };
+
+  // searchKw handler
+  const handleSearchKwChange = (e) => {
+    // set searchKw
+    setSearchKw(e.target.value);
+  };
+
+  // searchBtn handler
+  const handleSearchBtnClick = () => {
+    // Search update
+    setKw(searchKw)
+
+    // Save searchKw
+    localStorage.setItem("searchKw", searchKw);
+  }
+
+  // useEffect
+  useEffect(() => {
+    setPageIndex(router.query.page);
+  }, [router.query.page]);
+
+  // useEffect
+  useEffect(() => {
+    setSearchKw(localStorage.getItem("searchKw") || "")
+  }, [])
+
+  if (error) return <div>Failed to load</div>;
+  if (!data) return <div>Loading...</div>;
 
   return (
     <>
@@ -26,9 +90,9 @@ export default function Home() {
             </Col>
             <div className="col-6">
               <InputGroup>
-                <input type="text" className="form-control" />
+                <input type="text" className="form-control" value={searchKw} onChange={handleSearchKwChange} />
                 <div className="input-group-append">
-                  <Button variant="outline-secondary">Search</Button>
+                  <Button variant="outline-secondary" onClick={handleSearchBtnClick}>Search</Button>
                 </div>
               </InputGroup>
             </div>
