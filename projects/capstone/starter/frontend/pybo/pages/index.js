@@ -17,12 +17,12 @@ export default function Home() {
   const storedPage = typeof window !== "undefined" && localStorage.getItem("pageIndex");
   const [pageIndex, setPageIndex] = useState(storedPage || 1);
 
-  // search
-  const storedSearch = typeof window !== "undefined" && localStorage.getItem("searchKeyword");
-  const [kw, setKw] = useState(storedSearch || "");
+  // search keyword
+  const [searchKw, setSearchKw] = useState("");
 
-  // focus DOM
-  const searchRef = useRef();
+  // kw
+  const storedKw = typeof window !== "undefined" && localStorage.getItem("searchKw");
+  const [kw, setKw] = useState(storedKw || "")
 
   // fetch the data
   const { data, error } = useSWR(
@@ -33,25 +33,40 @@ export default function Home() {
 
   // set page change
   const handlePageChange = (pageIndex) => {
-    router.push({ query: { page: pageIndex, kw: kw } });
+    // Update state
     setPageIndex(pageIndex);
+
+    // router
+    router.push({ query: { page: pageIndex } });
+
+    // Save storage
     localStorage.setItem("pageIndex", pageIndex);
   };
 
-  // set search change
-  const handleSearchChange = () => {
-    const searchKeyword = searchRef.current.value;
-    router.push({ query: { kw: searchKeyword } });
-    setKw(searchKeyword || "");
-    localStorage.setItem("searchKeyword", searchKeyword);
+  // searchKw handler
+  const handleSearchKwChange = (e) => {
+    // set searchKw
+    setSearchKw(e.target.value);
   };
+
+  // searchBtn handler
+  const handleSearchBtnClick = () => {
+    // Search update
+    setKw(searchKw)
+
+    // Save searchKw
+    localStorage.setItem("searchKw", searchKw);
+  }
 
   // useEffect
   useEffect(() => {
-    setKw(router.query.kw || "");
-    searchRef.current && (searchRef.current.value = router.query.kw || "");
     setPageIndex(router.query.page);
-  }, [router.query.page, router.query.kw]);
+  }, [router.query.page]);
+
+  // useEffect
+  useEffect(() => {
+    setSearchKw(localStorage.getItem("searchKw") || "")
+  }, [])
 
   if (error) return <div>Failed to load</div>;
   if (!data) return <div>Loading...</div>;
@@ -75,11 +90,9 @@ export default function Home() {
             </Col>
             <div className="col-6">
               <InputGroup>
-                <input type="text" className="form-control" ref={searchRef} />
+                <input type="text" className="form-control" value={searchKw} onChange={handleSearchKwChange} />
                 <div className="input-group-append">
-                  <Button variant="outline-secondary" onClick={handleSearchChange}>
-                   Search
-                  </Button>
+                  <Button variant="outline-secondary" onClick={handleSearchBtnClick}>Search</Button>
                 </div>
               </InputGroup>
             </div>

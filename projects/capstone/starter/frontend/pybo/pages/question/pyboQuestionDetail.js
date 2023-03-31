@@ -2,7 +2,7 @@ import { Badge, Button, Card, Container, Form } from "react-bootstrap";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import PyboNavBar from "../../components/pyboNavBar";
-import {useState} from "react";
+import { useState } from "react";
 import Head from "next/head";
 
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
@@ -21,24 +21,25 @@ export default function PyboQuestionDetail() {
   const submitAnswer = (e) => {
     e.preventDefault();
 
+    // TODO : Need user_id when use auth0
     const newAnswer = {
       content: answerContent,
       user_id: 1,
     };
 
     fetch(`http://127.0.0.1:5000/answer/create/${questionId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newAnswer),
-      })
-      .then(response => response.json())
-      .then(data => {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newAnswer),
+    })
+      .then((response) => response.json())
+      .then((data) => {
         // 서버로부터 응답이 성공적으로 돌아왔을 때 처리할 코드 작성
         console.log(data);
       })
-      .catch(error => {
+      .catch((error) => {
         // 서버로부터 응답이 실패했을 때 처리할 코드 작성
         console.error(error);
       });
@@ -88,10 +89,10 @@ export default function PyboQuestionDetail() {
         <h5 className="border-bottom my-3 py-2">
           {question.answer_set && question.answer_set.length}개의 답변이 있습니다.
         </h5>
-        <Card className="my-3">
-          <Card.Body>
-            {question.answer_set &&
-              question.answer_set.map((answer) => (
+        {question.answer_set &&
+          question.answer_set.map((answer) => (
+            <Card className="mb-2">
+              <Card.Body>
                 <div key={answer.id}>
                   <Card.Text>{answer.content}</Card.Text>
                   <div className="d-flex justify-content-end">
@@ -115,9 +116,9 @@ export default function PyboQuestionDetail() {
                     </Button>
                   </div>
                 </div>
-              ))}
-          </Card.Body>
-        </Card>
+              </Card.Body>
+            </Card>
+          ))}
         <Form onSubmit={submitAnswer}>
           <div className="mb-3">
             <Form.Control
