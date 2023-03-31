@@ -13,10 +13,12 @@ export default function PyboQuestionDetail() {
   const questionId = router.query["question_id"];
 
   // fetch the data
-  const { data, error } = useSWR(`http://127.0.0.1:5000/question/detail/${questionId}/`, fetcher);
+  const { data, mutate, error } = useSWR(
+    `http://127.0.0.1:5000/question/detail/${questionId}/`,
+    fetcher,
+  );
 
   const [answerContent, setAnswerContent] = useState("");
-  const [answerSet, setAnswerSet] = useState([]);
 
   const submitAnswer = (e) => {
     e.preventDefault();
@@ -35,9 +37,9 @@ export default function PyboQuestionDetail() {
       body: JSON.stringify(newAnswer),
     })
       .then((response) => response.json())
-      .then((data) => {
+      .then((answer) => {
         // 서버로부터 응답이 성공적으로 돌아왔을 때 처리할 코드 작성
-        console.log(data);
+        mutate({ ...data, answer_set: [...data.answer_set, answer] });
       })
       .catch((error) => {
         // 서버로부터 응답이 실패했을 때 처리할 코드 작성
@@ -52,6 +54,8 @@ export default function PyboQuestionDetail() {
 
   const question = data;
   const user = question.user;
+
+  console.log(data);
 
   return (
     <>
@@ -91,9 +95,9 @@ export default function PyboQuestionDetail() {
         </h5>
         {question.answer_set &&
           question.answer_set.map((answer) => (
-            <Card className="mb-2">
+            <Card className="mb-2" key={answer.id}>
               <Card.Body>
-                <div key={answer.id}>
+                <div>
                   <Card.Text>{answer.content}</Card.Text>
                   <div className="d-flex justify-content-end">
                     {answer.modify_date && (

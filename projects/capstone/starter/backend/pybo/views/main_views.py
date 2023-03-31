@@ -129,7 +129,7 @@ def create_answer(question_id):
     answer = Answer(question=question, content=content, user_id=user_id)
     answer.insert()
 
-    return jsonify({"message": "Answer successfully created."}), 200
+    return jsonify(answer.as_dict()), 200
 
 
 # SignUp

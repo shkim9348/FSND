@@ -3,9 +3,65 @@ import { Container, Row, Col, Button, InputGroup, Table } from "react-bootstrap"
 import styles from "../styles/Home.module.css";
 import PyboNavBar from "../components/pyboNavBar";
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/router";
+import useSWR from "swr";
+
+const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
 export default function Home() {
-  const data = { questions: [], page_nums: [] };
+  // router
+  const router = useRouter();
+
+  // useRef
+  const searchRef = useRef();
+
+  // page의 상태변수 생성(useState) 및 page history 지정(초기값)
+  const savedPage = typeof window !== "undefined" && localStorage.getItem("page");
+  const [page, setPage] = useState(savedPage || 1);
+
+  // search의 상태변수 생성(useState) 및 kw & searchKw 초기값 지정
+  const savedKw = typeof window !== "undefined" && localStorage.getItem("searchKw");
+  const [kw, setKw] = useState(savedKw || "");
+  const [searchKw, setSearchKw] = useState(savedKw || "");
+
+  // useSWR
+  const { data, error } = useSWR(
+    `http://127.0.0.1:5000/question/list?page=${page}&kw=${kw}`,
+    fetcher,
+    {
+      keepPreviousData: true,
+    },
+  );
+
+  // useEffect를 이용하여 page router가 변경되었을 때 data 불러오기
+  useEffect(() => {
+    setPage(router.query.page || 1);
+  }, [router.query.page]);
+
+  useEffect(() => {
+    setKw(router.query.kw || "");
+    setSearchKw(router.query.kw || "")
+  }, [router.query.kw]);
+  
+  // Page change handler
+  const handlePageChange = (page) => {
+    setPage(page);
+    localStorage.setItem("page", page);
+    // history
+    router.push({ query: { page } });
+  };
+
+  // Search change handler
+  const handleSearchChange = () => {
+    setKw(searchRef.current.value);
+    setSearchKw(searchRef.current.value);
+    router.push({ query: { kw: searchRef.current.value } });
+    localStorage.setItem("searchKw", searchRef.current.value);
+  };
+
+  if (error) return <div>Failed to load</div>;
+  if (!data) return <div>Loading...</div>;
 
   return (
     <>
@@ -26,9 +82,19 @@ export default function Home() {
             </Col>
             <div className="col-6">
               <InputGroup>
-                <input type="text" className="form-control" />
+                <input
+                  type="text"
+                  className="form-control"
+                  ref={searchRef}
+                  value={searchKw}
+                  onChange={(e) => {
+                    setSearchKw(e.target.value);
+                  }}
+                />
                 <div className="input-group-append">
-                  <Button variant="outline-secondary">Search</Button>
+                  <Button variant="outline-secondary" onClick={handleSearchChange}>
+                    Search
+                  </Button>
                 </div>
               </InputGroup>
             </div>
@@ -71,7 +137,7 @@ export default function Home() {
                 <a
                   className="page-link"
                   data-page={data.prev_num}
-                  onClick={() => handlePageChange(pageIndex - 1)}
+                  onClick={() => handlePageChange(data.prev_num)}
                 >
                   Prev
                 </a>
@@ -106,7 +172,7 @@ export default function Home() {
                 }
               } else {
                 return (
-                  <li className="disabled" key={page_num || i + "1"}>
+                  <li className="disabled" key={Math.random()}>
                     <a className="page-link">...</a>
                   </li>
                 );
@@ -117,7 +183,7 @@ export default function Home() {
                 <a
                   className="page-link"
                   data-page={data.next_num}
-                  onClick={() => handlePageChange(pageIndex + 1)}
+                  onClick={() => handlePageChange(data.next_num)}
                 >
                   Next
                 </a>

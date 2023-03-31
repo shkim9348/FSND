@@ -20,5 +20,5 @@
 
 
 #sqllite
-*.db
+# *.db
 
