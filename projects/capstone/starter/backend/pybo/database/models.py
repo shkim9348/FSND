@@ -71,11 +71,11 @@ class Question(BaseModel):
         backref=db.backref("question_voter_set"),
     )
 
-    def __init__(self, subject, content, create_date, user):
+    def __init__(self, subject, content, create_date, user_id):
         self.subject = subject
         self.content = content
-        self.create_date = create_date
-        self.user = user
+        self.create_date = datetime.now()
+        self.user_id = user_id
 
     def as_dict(self):
         return {

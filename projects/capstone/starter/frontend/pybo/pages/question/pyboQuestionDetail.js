@@ -82,10 +82,10 @@ export default function PyboQuestionDetail() {
             </div>
             <div className="my-3">
               <Button variant="outline-secondary" size="sm" className="mx-1">
-                수정
+                Modify
               </Button>
               <Button variant="outline-secondary" size="sm">
-                삭제
+                Delete
               </Button>
             </div>
           </Card.Body>
@@ -112,11 +112,16 @@ export default function PyboQuestionDetail() {
                     </Badge>
                   </div>
                   <div className="my-3">
-                    <Button variant="outline-secondary" size="sm" className="mx-1">
-                      수정
+                    <Button
+                      variant="outline-secondary"
+                      size="sm"
+                      className="mx-1"
+                      href={`pyboAnswerForm/?question_id=${question.id}`}
+                    >
+                      Modify
                     </Button>
                     <Button variant="outline-secondary" size="sm">
-                      삭제
+                      Delete
                     </Button>
                   </div>
                 </div>

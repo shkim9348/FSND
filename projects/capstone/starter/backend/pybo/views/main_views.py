@@ -76,6 +76,7 @@ def create_question():
     question_data = {
         "subject": data.get("subject"),
         "content": data.get("content"),
+        "create_date": data.get("create_date"),
         "user_id": data.get("user_id"),
     }
 
@@ -86,7 +87,7 @@ def create_question():
     question = Question(**question_data)
     question.insert()
 
-    return jsonify({"message": "Question successfully created."}), 200
+    return jsonify(question.as_dict()), 200
 
 
 # QuestionModify
@@ -128,6 +129,20 @@ def create_answer(question_id):
 
     answer = Answer(question=question, content=content, user_id=user_id)
     answer.insert()
+
+    return jsonify(answer.as_dict()), 200
+
+
+# AnswerDetail
+@bp.route("/answer/detail/<int:question_id>/")
+def ans_detail(question_id):
+    question = Question.query.get_or_404(question_id)
+    data = request.get_json()
+
+    content = data.get("content")
+    user_id = data.get("user_id")
+
+    answer = Answer(question=question, content=content, user_id=user_id)
 
     return jsonify(answer.as_dict()), 200
 
