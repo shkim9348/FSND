@@ -91,28 +91,34 @@ def create_question():
 
 
 # QuestionModify
-@bp.route("/question/modify/<int:question_id>", methods=["POST"])
+@bp.route("/question/modify/<int:question_id>", methods=["GET", "POST"])
 def modify_question(question_id):
     question = Question.query.get_or_404(question_id)
-    # if g.user != question.user:
-    #     abort(403)
 
-    data = request.get_json()
-    question.subject = data.get("subject")
-    question.content = data.get("content")
-    question.modify_date = datetime.now()
+    if request.method == "POST":
+        data = request.get_json()
+        subject = data.get("subject")
+        content = data.get("content")
+        user_id = data.get("user_id")
 
-    question.update()
+        question.subject = subject
+        question.content = content
+        question.user_id = user_id
+        question.modify_date = datetime.now()
 
-    return jsonify({"message": "Question successfully modified."}), 200
+        question.update()
+
+    return jsonify(question.as_dict()), 200
 
 
 # DeleteQuestion
-@bp.route("/question/delete/<int:question_id>")
+@bp.route("/question/delete/<int:question_id>", methods=["DELETE"])
 def delete_question(question_id):
     question = Question.query.get_or_404(question_id)
-    if g.user != question.user:
-        abort(403)
+
+    # TODO: use Auth0
+    # if g.user != question.user:
+    #     abort(403)
 
     question.delete()
 
@@ -133,18 +139,29 @@ def create_answer(question_id):
     return jsonify(answer.as_dict()), 200
 
 
-# AnswerDetail
-@bp.route("/answer/detail/<int:question_id>/")
-def ans_detail(question_id):
-    question = Question.query.get_or_404(question_id)
-    data = request.get_json()
-
-    content = data.get("content")
-    user_id = data.get("user_id")
-
-    answer = Answer(question=question, content=content, user_id=user_id)
+# ModifyAnswer
+@bp.route("/answer/modify/<int:answer_id>", methods=("GET", "POST"))
+def modify_answer(answer_id):
+    answer = Answer.query.get_or_404(answer_id)
+    if request.method == "POST":
+        data = request.get_json()
+        content = data.get("content")
+        user_id = data.get("user_id")
+        answer.content = content
+        answer.user_id = user_id
+        answer.modify_date = datetime.now()
+        answer.update()
 
     return jsonify(answer.as_dict()), 200
+
+
+# DeleteAnswer
+@bp.route("/answer/delete/<int:answer_id>", methods=("DELETE",))
+def delete_answer(answer_id):
+    answer = Answer.query.get_or_404(answer_id)
+
+    answer.delete()
+    return jsonify({"result": "Answer deleted"}), 200
 
 
 # SignUp

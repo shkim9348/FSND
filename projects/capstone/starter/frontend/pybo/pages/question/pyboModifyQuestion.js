@@ -1,41 +1,45 @@
 import Head from "next/head";
 import useSWR from "swr";
-import { useRouter } from "next/router";
 import { Button, Container, Form } from "react-bootstrap";
 import PyboNavBar from "../../components/pyboNavBar";
+import { useRouter } from "next/router";
 
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
-export default function PyboAnswerForm() {
+export default function PyboModifyQuestion() {
   const router = useRouter();
-  const answerId = router.query["answer_id"];
   const questionId = router.query["question_id"];
 
   const {
-    data: answerData,
+    data: questionData,
     error,
     isLoading,
-  } = useSWR(`http://127.0.0.1:5000/answer/modify/${answerId}`, fetcher);
+  } = useSWR(`http://127.0.0.1:5000/question/modify/${questionId}`, fetcher);
 
-  const setAnswerContent = (content) => {
-    answerData.content = content;
-  };
+  const setQuestionSubject = (subject) => {
+    questionData.subject = subject;
+  }
 
-  const saveAnswer = (e) => {
+  const setQuestionContent = (content) => {
+    questionData.content = content;
+  }
+
+  const saveQuestion = (e) => {
     e.preventDefault();
 
     // TODO : Need user_id when use auth0
-    const modifyAnswer = {
-      content: answerData.content,
+    const modifyQuestion = {
+      subject: questionData.subject,
+      content: questionData.content,
       user_id: 1,
     };
 
-    fetch(`http://127.0.0.1:5000/answer/modify/${answerId}`, {
+    fetch(`http://127.0.0.1:5000/question/modify/${questionId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(modifyAnswer),
+      body: JSON.stringify(modifyQuestion),
     })
       .then((response) => response.json())
       .catch((error) => {
@@ -53,19 +57,27 @@ export default function PyboAnswerForm() {
   return (
     <>
       <Head>
-        <title>Modify the Answer</title>
+        <title>Edit the Question</title>
       </Head>
       <PyboNavBar />
       <Container>
-        <h5 className="my-3 border-bottom pb-2">Modify the Answer</h5>
-        <Form onSubmit={saveAnswer}>
+        <h5 className="my-3 border-bottom pb-2">Edit the Question</h5>
+        <Form onSubmit={saveQuestion}>
+          <div className="mb-3">
+            <Form.Label>Subject</Form.Label>
+            <Form.Control
+              type="text"
+              defaultValue={questionData.subject}
+              onChange={(e) => setQuestionSubject(e.target.value)}
+            />
+          </div>
           <div className="mb-3">
             <Form.Label>Content</Form.Label>
             <Form.Control
               as="textarea"
               rows={10}
-              defaultValue={answerData.content}
-              onChange={(e) => setAnswerContent(e.target.value)}
+              defaultValue={questionData.content}
+              onChange={(e) => setQuestionContent(e.target.value)}
             />
           </div>
           <Button variant="primary" type="submit">

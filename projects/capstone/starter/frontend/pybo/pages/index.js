@@ -76,7 +76,7 @@ export default function Home() {
         <Container className="my-3">
           <Row className="my-3">
             <Col className="col-6">
-              <Button variant="primary" href={`question/pyboQuestionForm`}>
+              <Button variant="primary" href={`question/pyboWriteQuestion`}>
                 Write the Question
               </Button>
             </Col>

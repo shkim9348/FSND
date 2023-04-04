@@ -2,7 +2,7 @@ import { Badge, Button, Card, Container, Form } from "react-bootstrap";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import PyboNavBar from "../../components/pyboNavBar";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Head from "next/head";
 
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
@@ -49,13 +49,43 @@ export default function PyboQuestionDetail() {
     setAnswerContent("");
   };
 
+  // Delete question handler
+  const handleDeleteQuestion = (e) => {
+    e.preventDefault();
+
+    fetch(`http://127.0.0.1:5000/question/delete/${questionId}`, {
+      method: "DELETE",
+    })
+      .then((res) => res.json())
+      .then((data) => console.log(data));
+
+    // Go to Home
+    window.location.href = window.location.origin;
+  };
+
+  // Delete answer handler
+  const handleDeleteAnswer = (e) => {
+    e.preventDefault();
+
+    const answerId = e.target.value;
+
+    fetch(`http://127.0.0.1:5000/answer/delete/${answerId}`, {
+      method: "DELETE",
+    })
+      .then((res) => res.json())
+      .then(() => {
+        mutate({
+          ...data,
+          answer_set: [...data.answer_set.filter((answer) => answer.id !== answerId)],
+        });
+      });
+  };
+
   if (error) return <div>Failed to load</div>;
   if (!data) return <div>Loading...</div>;
 
   const question = data;
   const user = question.user;
-
-  console.log(data);
 
   return (
     <>
@@ -81,10 +111,16 @@ export default function PyboQuestionDetail() {
               </Badge>
             </div>
             <div className="my-3">
-              <Button variant="outline-secondary" size="sm" className="mx-1">
+              <Button
+                variant="outline-secondary"
+                size="sm"
+                className="mx-1"
+                href={`pyboModifyQuestion/?question_id=${question.id}`}
+              >
                 Modify
               </Button>
-              <Button variant="outline-secondary" size="sm">
+              {/* TODO: Need delete alert */}
+              <Button variant="outline-secondary" size="sm" onClick={handleDeleteQuestion}>
                 Delete
               </Button>
             </div>
@@ -116,11 +152,17 @@ export default function PyboQuestionDetail() {
                       variant="outline-secondary"
                       size="sm"
                       className="mx-1"
-                      href={`pyboAnswerForm/?question_id=${question.id}`}
+                      href={`pyboAnswerForm/?answer_id=${answer.id}&question_id=${question.id}`}
                     >
                       Modify
                     </Button>
-                    <Button variant="outline-secondary" size="sm">
+                    {/* TODO: Need delete alert */}
+                    <Button
+                      variant="outline-secondary"
+                      size="sm"
+                      value={answer.id}
+                      onClick={handleDeleteAnswer}
+                    >
                       Delete
                     </Button>
                   </div>

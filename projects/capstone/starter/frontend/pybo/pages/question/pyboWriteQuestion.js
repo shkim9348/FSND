@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Button, Container, Form } from "react-bootstrap";
 import PyboNavBar from "../../components/pyboNavBar";
 
-export default function PyboQuestionForm() {
+export default function PyboWriteQuestion() {
   const [questionSubject, setQuestionSubject] = useState("");
   const [questionContent, setQuestionContent] = useState("");
 
@@ -25,16 +25,14 @@ export default function PyboQuestionForm() {
       body: JSON.stringify(newQuestion),
     })
       .then((response) => response.json())
-      .then((data) => {
-        // 서버로부터 응답이 성공적으로 돌아왔을 때 처리할 코드 작성
-        console.log(data);
+      .then(() => {
+        // Go to Home
+        window.location.href = window.location.origin;
       })
       .catch((error) => {
         // 서버로부터 응답이 실패했을 때 처리할 코드 작성
         console.error(error);
       });
-
-    window.location.href = "http://localhost:3000";
   };
 
   return (
@@ -44,7 +42,7 @@ export default function PyboQuestionForm() {
       </Head>
       <PyboNavBar />
       <Container>
-        <h5 className="my-3 border-bottom pb-2">Write</h5>
+        <h5 className="my-3 border-bottom pb-2">Write the Question</h5>
         <Form onSubmit={submitQuestion}>
           <div className="mb-3">
             <Form.Label>Subject</Form.Label>
