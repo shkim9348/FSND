@@ -21,7 +21,7 @@ export default function Modify() {
     trigger: modifyAnswer,
     error,
   } = useSWRMutation(
-    `${process.env.API_URL}/answer/modify/${router.query.id}`,
+    `${process.env.API_URL}/question/${router.query.question_id}/answer/${router.query.id}`,
     async (url, { arg }) => {
       const answer = await fetch(url, {
         method: arg ? "PUT" : "GET",

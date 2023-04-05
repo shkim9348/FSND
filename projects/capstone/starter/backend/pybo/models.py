@@ -87,7 +87,6 @@ class Answer(db.Model):
             "user": self.user.as_dict(),
             "create_date": self.create_date,
             "voter": [user.as_dict() for user in self.voter],
-            "question_id": self.question_id,
         }
 
 

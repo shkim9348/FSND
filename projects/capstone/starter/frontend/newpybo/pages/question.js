@@ -25,7 +25,7 @@ export default function Question() {
     data: question,
     error,
     mutate,
-  } = useSWR(`${process.env.API_URL}/question/detail/${router.query.id}/`, fetcher, {
+  } = useSWR(`${process.env.API_URL}/question/${router.query.id}/`, fetcher, {
     keepPreviousData: true,
     revalidateOnFocus: false,
   });
@@ -38,7 +38,7 @@ export default function Question() {
     }
     mutate(
       async () => {
-        const deleted = await fetch(`${process.env.API_URL}/question/delete/${questionId}`, {
+        const deleted = await fetch(`${process.env.API_URL}/question/${questionId}`, {
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -68,7 +68,7 @@ export default function Question() {
     }
     mutate(
       async () => {
-        const voters = await fetch(`${process.env.API_URL}/question/vote/${questionId}`, {
+        const voters = await fetch(`${process.env.API_URL}/question/${questionId}/vote`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -89,7 +89,7 @@ export default function Question() {
   };
 
   // add/remove answer voter
-  const handleAddAnswerVoter = (e, answerId) => {
+  const handleAddAnswerVoter = (e, questionId, answerId) => {
     e.preventDefault();
 
     const answer = question.answer_set.filter((answer) => answer.id == answerId)[0];
@@ -99,7 +99,7 @@ export default function Question() {
     }
     mutate(
       async () => {
-        const voters = await fetch(`${process.env.API_URL}/answer/vote/${answerId}`, {
+        const voters = await fetch(`${process.env.API_URL}/question/${questionId}/answer/${answerId}/vote`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -117,7 +117,7 @@ export default function Question() {
           if (answer.id == answerId) {
             answer.voter = voters;
           }
-          return {...answer};
+          return { ...answer };
         });
 
         return { ...question, answer_set: [...answers], errors: undefined };
@@ -133,7 +133,7 @@ export default function Question() {
     // remote mutate -> local mutate
     mutate(
       async () => {
-        const answer = await fetch(`${process.env.API_URL}/answer/create/${questionId}`, {
+        const answer = await fetch(`${process.env.API_URL}/question/${questionId}/answer`, {
           method: "POST",
           headers: {
             // pybo server가 html/api 방식을 공유하기 때문에 form으로 전송
@@ -168,20 +168,24 @@ export default function Question() {
       { revalidate: false },
     );
   };
+
   // delete answer
-  const handleDeleteAnswer = (e, answerId) => {
+  const handleDeleteAnswer = (e, questionId, answerId) => {
     e.preventDefault();
     if (!confirm("정말로 삭제하시겠습니까?")) {
       return;
     }
     mutate(
       async () => {
-        const deleted = await fetch(`${process.env.API_URL}/answer/delete/${answerId}`, {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
+        const deleted = await fetch(
+          `${process.env.API_URL}/question/${questionId}/answer/${answerId}`,
+          {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
           },
-        })
+        )
           .then((res) => res.json())
           .then((data) => data);
 
@@ -282,7 +286,7 @@ export default function Question() {
                     <a
                       href="#"
                       className="recommend btn btn-sm btn-outline-secondary"
-                      onClick={(e) => handleAddAnswerVoter(e, answer.id)}
+                      onClick={(e) => handleAddAnswerVoter(e, question.id, answer.id)}
                     >
                       {" "}
                       추천
@@ -291,7 +295,7 @@ export default function Question() {
                     {user.email == answer.user.email && (
                       <>
                         <Link
-                          href={`/answer/modify?id=${answer.id}`}
+                          href={`/answer/modify?id=${answer.id}&question_id=${question.id}`}
                           className="btn btn-sm btn-outline-secondary"
                         >
                           수정
@@ -299,7 +303,7 @@ export default function Question() {
                         <a
                           href="#"
                           className="delete btn btn-sm btn-outline-secondary "
-                          onClick={(e) => handleDeleteAnswer(e, answer.id)}
+                          onClick={(e) => handleDeleteAnswer(e, question.id, answer.id)}
                         >
                           삭제
                         </a>

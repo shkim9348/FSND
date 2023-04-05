@@ -1,5 +1,6 @@
+from flask_sqlalchemy.session import Session
 import config
-from flask import Flask, jsonify
+from flask import Flask, g, jsonify, session
 from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
@@ -45,12 +46,10 @@ def create_app():
     from . import models
 
     # views
-    from .views import answer_views, auth_views, main_views, question_views
+    from .views import main_views, question_views
 
     app.register_blueprint(main_views.bp)
     app.register_blueprint(question_views.bp)
-    app.register_blueprint(answer_views.bp)
-    app.register_blueprint(auth_views.bp)
 
     @app.after_request
     def creds(res):
@@ -61,16 +60,23 @@ def create_app():
         res.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS, PATCH"
         return res
 
+    # user
+    from pybo.models import User
+
+    @app.before_request
+    def load_logged_in_user():
+        user_id = session.get("user_id")
+        if user_id is None:
+            g.user = None
+        else:
+            g.user = db.session.get(User, user_id)
+
+
     # markdown
     Markdown(app, extensions=["nl2br", "fenced_code"])
 
-    # 필터
-    from .filter import format_datetime
-
-    app.jinja_env.filters["datetime"] = format_datetime
 
     # error
-
     @app.errorhandler(422)
     def unprocessable(error):
         return (

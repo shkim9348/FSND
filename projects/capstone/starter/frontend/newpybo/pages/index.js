@@ -22,7 +22,7 @@ export default function Home() {
 
   // question list
   const { data: questions, error } = useSWR(
-    `http://127.0.0.1:5000/question/list/?page=${page}&kw=${kw}`,
+    `http://127.0.0.1:5000/question/?page=${page}&kw=${kw}`,
     fetcher,
     {
       keepPreviousData: true,

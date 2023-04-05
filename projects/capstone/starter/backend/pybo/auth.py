@@ -7,7 +7,7 @@ from jose import jwt
 from urllib.request import urlopen
 from sqlalchemy.orm.exc import NoResultFound
 from werkzeug.security import generate_password_hash
-from pybo import db, wants_json_response
+from pybo import db
 from pybo.models import User
 
 
@@ -153,9 +153,6 @@ def requires_auth(permission=""):
     def requires_auth_decorator(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
-            # api only
-            if not wants_json_response(request):
-                return f(*args, **kwargs)
 
             # authentication
             token = get_token_auth_header()
