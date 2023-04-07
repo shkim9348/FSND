@@ -1,19 +1,18 @@
 import json
 import random
 import string
-from flask import request, _request_ctx_stack, abort, g, session
 from functools import wraps
-from jose import jwt
 from urllib.request import urlopen
+
+from flask import current_app, g, request, session
+from flask_migrate import current
+from jose import jwt
+from jose.exceptions import JWTError
 from sqlalchemy.orm.exc import NoResultFound
 from werkzeug.security import generate_password_hash
+
 from pybo import db
 from pybo.models import User
-
-
-AUTH0_DOMAIN = "dev-hwgb8d1f3r3ztqaq.us.auth0.com"
-ALGORITHMS = ["RS256"]
-API_AUDIENCE = "pybo"
 
 
 class AuthError(Exception):
@@ -83,13 +82,17 @@ def check_permissions(permission, payload):
 
 
 def verify_decode_jwt(token):
-    # raise Exception("Not Implemented")
-    header = jwt.get_unverified_header(token)
+    # it should be an Auth0 token with key id (kid)
+    try:
+        header = jwt.get_unverified_header(token)
+    except JWTError:
+        raise AuthError({"code": "invalid_header", "description": "You should Login"}, 401)
+
     if "kid" not in header:
         raise AuthError({"code": "invalid_header", "description": "Token should contain kid"}, 401)
 
     # it should verify the token using Auth0 /.well-known/jwks.json
-    iss = f"https://{AUTH0_DOMAIN}/"
+    iss = f"https://{current_app.config['AUTH0_DOMAIN']}/"
     res = urlopen(f"{iss}.well-known/jwks.json")
     jwks = json.loads(res.read())
 
@@ -109,9 +112,9 @@ def verify_decode_jwt(token):
         payload = jwt.decode(
             token,
             rsa_key,
-            algorithms=ALGORITHMS,
-            audience=API_AUDIENCE,
-            issuer=f"https://{AUTH0_DOMAIN}/",
+            algorithms=current_app.config["AUTH0_ALGORITHMS"],
+            audience=current_app.config['API_AUDIENCE'],
+            issuer=f"https://{current_app.config['AUTH0_DOMAIN']}/",
         )
 
     except jwt.ExpiredSignatureError:
@@ -153,7 +156,6 @@ def requires_auth(permission=""):
     def requires_auth_decorator(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
-
             # authentication
             token = get_token_auth_header()
             payload = verify_decode_jwt(token)

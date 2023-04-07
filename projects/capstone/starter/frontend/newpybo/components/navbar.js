@@ -1,26 +1,13 @@
-import React, { useEffect, useState } from "react";
-import {useAuthContext} from "@/contexts/context";
+import {useAuth0} from "@auth0/auth0-react";
 
 export default function Navbar() {
-  const { authStatus, loginWithRedirect, logout, user } = useAuthContext();
-
-  // fix Hydration Error
-  const [loginText, setLoginText] = useState();
-
-  // fix Hydration Error
-  useEffect(() => {
-    if (authStatus) {
-      setLoginText(`${user && user.name ? user.name : ""} 로그아웃`);
-    } else {
-      setLoginText("로그인");
-    }
-  }, [authStatus]);
+  const { isAuthenticated, user, loginWithRedirect, logout } = useAuth0();
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light border-bottom">
       <div className="container">
         <a className="navbar-brand" href="/">
-          Pybo
+          Pybo Board
         </a>
         <button
           className="navbar-toggler"
@@ -34,7 +21,7 @@ export default function Navbar() {
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
-          {authStatus ? (
+          {isAuthenticated ? (
             <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
               <li className="nav-item">
                 <button
@@ -47,7 +34,7 @@ export default function Navbar() {
                     })
                   }
                 >
-                  {loginText}
+                  {user && user.name ? user.name + " |" : ""} Logout
                 </button>
               </li>
             </ul>
@@ -55,7 +42,7 @@ export default function Navbar() {
             <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
               <li className="nav-item">
                 <button className="nav-link btn" onClick={() => loginWithRedirect()}>
-                  {loginText}
+                  Login
                 </button>
               </li>
             </ul>

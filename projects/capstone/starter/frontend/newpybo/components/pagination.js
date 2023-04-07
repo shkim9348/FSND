@@ -7,13 +7,13 @@ export default function Pagination({ pagination, onPageChange }) {
             className="page-link"
             onClick={() => onPageChange(pagination.prev_num)}
           >
-            이전
+            Prev
           </a>
         </li>
       ) : (
         <li className="page-item disabled">
           <a className="page-link" tabIndex="-1" aria-disabled="true">
-            이전
+            Prev
           </a>
         </li>
       )}
@@ -53,13 +53,13 @@ export default function Pagination({ pagination, onPageChange }) {
             className="page-link"
             onClick={() => onPageChange(pagination.next_num)}
           >
-            다음
+            Next
           </a>
         </li>
       ) : (
         <li className="page-item disabled">
           <a className="page-link" tabIndex="-1" aria-disabled="true">
-            다음
+            Next
           </a>
         </li>
       )}

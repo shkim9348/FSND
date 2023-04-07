@@ -1,5 +1,5 @@
 import QuestionForm from "@/components/questionForm";
-import { getCsrfToken, useAuthContext } from "@/contexts/context";
+import { useAuthToken } from "@/contexts/context";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useRef } from "react";
@@ -7,7 +7,7 @@ import useSWRMutation from "swr/mutation";
 
 export default function Create() {
   //auth
-  const { user, accessToken } = useAuthContext();
+  const accessToken = useAuthToken();
 
   // router
   const router = useRouter();
@@ -22,11 +22,9 @@ export default function Create() {
       const question = await fetch(url, {
         method: "POST",
         headers: {
-          // pybo server가 html/api 방식을 공유하기 때문에 form으로 전송
-          "Content-Type": "application/x-www-form-urlencoded",
+          "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
         },
-        credentials: "include",
         body: arg,
       })
         .then((res) => res.json())
@@ -46,9 +44,10 @@ export default function Create() {
     e.preventDefault();
 
     const formDate = new FormData(formRef.current);
-    // csrftoken을 form feild로 전송
-    formDate.append("csrf_token", await getCsrfToken());
-    createQuestion(new URLSearchParams(formDate));
+    createQuestion(JSON.stringify({
+      subject: formDate.get("subject"),
+      content: formDate.get("content"),
+    }));
   };
 
   return (

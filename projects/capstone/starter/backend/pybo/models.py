@@ -1,4 +1,15 @@
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import event
+from sqlalchemy.orm import validates
+
 from pybo import db
+
+
+class RequiredError(Exception):
+    def __init__(self, error, status_code) -> None:
+        self.error = error
+        self.status_code = status_code
+
 
 question_voter = db.Table(
     "question_voter",
@@ -25,7 +36,6 @@ class Question(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
     user = db.relationship("User", backref=db.backref("question_set"))
     modify_date = db.Column(db.DateTime(), nullable=True)
-
     voter = db.relationship(
         "User",
         secondary=question_voter,
@@ -44,6 +54,19 @@ class Question(db.Model):
             "modify_date": self.modify_date,
             "voter": [user.as_dict() for user in self.voter],
         }
+
+    @validates("subject")
+    def validate_subject(self, key, subject):
+        if not subject:
+            raise RequiredError("Subject is required.", 400)
+        return subject
+
+    @validates("content")
+    def validate_content(self, key, content):
+        if not content:
+            raise RequiredError("Content is required.", 400)
+        return content
+
 
 answer_voter = db.Table(
     "answer_voter",
@@ -71,7 +94,6 @@ class Answer(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
     user = db.relationship("User", backref=db.backref("answer_set"))
     modify_date = db.Column(db.DateTime(), nullable=True)
-
     voter = db.relationship(
         "User",
         secondary=answer_voter,
@@ -88,6 +110,12 @@ class Answer(db.Model):
             "create_date": self.create_date,
             "voter": [user.as_dict() for user in self.voter],
         }
+
+    @validates("content")
+    def validate_content(self, key, content):
+        if not content:
+            raise RequiredError("Content is required.", 400)
+        return content
 
 
 class User(db.Model):

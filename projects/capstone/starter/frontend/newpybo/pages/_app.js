@@ -1,8 +1,7 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import { Auth0Provider } from "@auth0/auth0-react";
 import Navbar from "@/components/navbar";
-import { AuthProvider } from "@/contexts/context";
+import { AuthTokenProvider } from "@/contexts/context";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function App({ Component, pageProps }) {
@@ -14,14 +13,14 @@ function App({ Component, pageProps }) {
         redirect_uri: typeof window != "undefined" && location.origin,
         audience: "pybo",
         scope: "openid profile email",
-        cacheLocation: "localStorage",
-        useRefreshTokens: true,
       }}
+      cacheLocation="localstorage"
+      useRefreshTokens={true}
     >
-      <AuthProvider>
+      <AuthTokenProvider>
         <Navbar />
         <Component {...pageProps} />
-      </AuthProvider>
+      </AuthTokenProvider>
     </Auth0Provider>
   );
 }
