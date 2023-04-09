@@ -84,6 +84,6 @@ npm run dev
 forntend(cdn)
 `udacity-shkim.stage.ver.team`
 backend (api server reverse proxy)
-`shkim-api.ver.team`
+`shkim-api.ver.team/question`
 - api server ip: 115.68.17.216  
-- api server test: http://115.68.17.216:5000/
+- api server test: http://115.68.17.216:5001/
