@@ -81,7 +81,7 @@ npm run dev
 ```
 
 ### API info
-forntend(cdn)
+forntend(cdn)  
 `udacity-shkim.stage.ver.team`  
 backend (api server reverse proxy)  
 `shkim-api.ver.team/question`  
