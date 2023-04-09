@@ -5,7 +5,6 @@ from functools import wraps
 from urllib.request import urlopen
 
 from flask import current_app, g, request, session
-from flask_migrate import current
 from jose import jwt
 from jose.exceptions import JWTError
 from sqlalchemy.orm.exc import NoResultFound
@@ -86,7 +85,7 @@ def verify_decode_jwt(token):
     try:
         header = jwt.get_unverified_header(token)
     except JWTError:
-        raise AuthError({"code": "invalid_header", "description": "You should Login"}, 401)
+        raise AuthError({"code": "invalid_header", "description": "You should Login first"}, 401)
 
     if "kid" not in header:
         raise AuthError({"code": "invalid_header", "description": "Token should contain kid"}, 401)

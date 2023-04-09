@@ -4,7 +4,7 @@ const nextConfig = {
   trailingSlash: true,
   output: "export",
   env: {
-    API_URL: "http://127.0.0.1:5000",
+    API_URL: "https://shkim-api.ver.team",
   }
 }
 

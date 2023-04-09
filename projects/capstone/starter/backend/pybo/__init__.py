@@ -18,9 +18,11 @@ db = SQLAlchemy(metadata=MetaData(naming_convention=naming_convention))
 migrate = Migrate()
 
 
-def create_app():
+def create_app(**override):
     app = Flask(__name__)
     app.config.from_object(config)
+    app.config.update(override)
+    app.url_map.strict_slashes = False
 
     # middleware
 

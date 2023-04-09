@@ -25,7 +25,7 @@ export default function Home() {
 
   // question list
   const { data: questions, error } = useSWR(
-    `http://127.0.0.1:5000/question/?page=${page}&kw=${kw}`,
+    `${process.env.API_URL}/question/?page=${page}&kw=${kw}`,
     fetcher,
     {
       keepPreviousData: true,
@@ -90,17 +90,9 @@ export default function Home() {
                   Write the Question
                 </Link>
               ) : (
-                <span
-                  class="d-inline-block"
-                  tabindex="0"
-                  data-bs-toggle="popover"
-                  data-bs-trigger="hover focus"
-                  data-bs-content="Disabled popover"
-                >
-                  <button class="btn btn-primary" type="button" disabled>
-                    Disabled button
-                  </button>
-                </span>
+                <button className="btn btn-primary" type="button" disabled>
+                  Write the Question
+                </button>
               )}
             </div>
             <div className="col-6">

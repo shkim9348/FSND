@@ -69,7 +69,7 @@ def questions():
 
 
 # Question Detail
-@bp.route("/<int:question_id>/", methods=["GET"])
+@bp.route("/<int:question_id>", methods=["GET"])
 def question_read(question_id):
     question = db.get_or_404(Question, question_id)
     return jsonify(question.as_dict()), 200
