@@ -45,6 +45,11 @@ class TestAPI(unittest.TestCase):
         response = self.client().post(BASE_URL, headers=headers, data=json.dumps(data))
         self.assertEqual(response.status_code, 200)
 
+        # 404, empty data
+        invalid_url = "http://127.0.0.1:5000/q"
+        response = self.client().post(invalid_url, headers=headers, data=json.dumps(data))
+        self.assertEqual(response.status_code, 404)
+
     def test_question_modify(self):
         self.create_question(username="manager", email="manager@ver.team")
 
@@ -59,6 +64,13 @@ class TestAPI(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 200)
 
+        # 404, invalid_question
+        invalid_question = 9999
+        response = self.client().put(
+            f"{BASE_URL}/{invalid_question}/", headers=headers, data=json.dumps(data)
+        )
+        self.assertEqual(response.status_code, 404)
+
     def test_question_delete(self):
         self.create_question(username="manager", email="manager@ver.team")
 
@@ -66,6 +78,12 @@ class TestAPI(unittest.TestCase):
         headers = {"Authorization": f"Bearer {MANAGER_TOKEN}"}
         response = self.client().delete(f"{BASE_URL}/{question_id}", headers=headers)
         self.assertEqual(response.status_code, 200)
+
+        # 404, invalid_question
+        invalid_question = 9999
+        response = self.client().delete(
+            f"{BASE_URL}/{invalid_question}/", headers=headers)
+        self.assertEqual(response.status_code, 404)
 
     def test_question_vote(self):
         self.create_question(username="manager", email="manager@ver.team")
@@ -77,12 +95,23 @@ class TestAPI(unittest.TestCase):
         response = self.client().post(f"{BASE_URL}/{question_id}/vote", headers=headers)
         self.assertEqual(response.status_code, 200)
 
+        # 404, invalid_question
+        invalid_question = 9999
+        headers = {"Authorization": f"Bearer {MANAGER_TOKEN}"}
+        response = self.client().post(f"{BASE_URL}/{invalid_question}/vote", headers=headers)
+        self.assertEqual(response.status_code, 404)
+
     def test_answer_read(self):
         self.create_question(username="user1", email="user1@example.com")
 
         question_id = 1
         answer_id = 1
         response = self.client().get(f"{BASE_URL}/{question_id}/answer/{answer_id}")
+        self.assertEqual(response.status_code, 200)
+
+        # 404, invalid question
+        invalid_question = 9999
+        response = self.client().get(f"{BASE_URL}/{invalid_question}/answer/{answer_id}")
         self.assertEqual(response.status_code, 200)
 
     def test_answer_modify(self):
@@ -97,6 +126,13 @@ class TestAPI(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 200)
 
+        # 404, invalid answer
+        invalid_answer = 9999
+        response = self.client().put(
+            f"{BASE_URL}/{question_id}/answer/{invalid_answer}", headers=headers, data=json.dumps(data)
+        )
+        self.assertEqual(response.status_code, 404)
+
     def test_answer_create(self):
         self.create_question(username="manager", email="manager@ver.team")
 
@@ -108,6 +144,13 @@ class TestAPI(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 200)
 
+        # 404, invalid question
+        invalid_question = 9999
+        response = self.client().post(
+            f"{BASE_URL}/{invalid_question}/answer", headers=headers, data=json.dumps(data)
+        )
+        self.assertEqual(response.status_code, 404)
+
     def test_answer_delete(self):
         self.create_question(username="manager", email="manager@ver.team")
 
@@ -118,6 +161,13 @@ class TestAPI(unittest.TestCase):
             f"{BASE_URL}/{question_id}/answer/{answer_id}", headers=headers
         )
         self.assertEqual(response.status_code, 200)
+
+        # 404, invalid answer
+        invalid_answer = 9999
+        response = self.client().delete(
+            f"{BASE_URL}/{question_id}/answer/{invalid_answer}", headers=headers
+        )
+        self.assertEqual(response.status_code, 404)
 
     def test_permission(self):
         self.create_question(username="manager", email="manager@ver.team")
