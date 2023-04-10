@@ -31,6 +31,7 @@ This API uses JWT-based authentication. To access any of the endpoints that requ
 
 ## Auth0 User permissions
 #### User1. manager : all permissions  
+>ID: manager@ver.team / PW: !verteam1   
 `get:question` - Get the list and detail of questions on the board.
 `post:question` - Write the question.
 `put:question` - Edit existed questions.
@@ -43,6 +44,7 @@ This API uses JWT-based authentication. To access any of the endpoints that requ
 `vote:answer` - Vote existed answers.  
 
 #### User2. boarder2 : All permissions to the question and get:answer, vote:answer  
+> ID: boarder2@ver.team / PW: !verteam1
 `get:question` - Get the list and detail of questions on the board.
 `post:question` - Write the question.
 `put:question` - Edit existed questions.
