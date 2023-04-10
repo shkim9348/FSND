@@ -1,13 +1,7 @@
 # Pybo Board  
-
----
-
 This project is a backend application for a Q&amp;A web application called Pybo. The project structure is as follows:  
 
 ## Project Structure
-
----
-
 ```
 ├── README.md
 ├── config.py
@@ -33,16 +27,10 @@ To run the project, first install the necessary dependencies by running
 Then, run the Flask development server with `flask run`. The server should start on `http://127.0.0.1:5000`.
 
 ## Authentication
-
----
-
 This API uses JWT-based authentication. To access any of the endpoints that require authentication, you need to include an `Authorization` header in your request with a valid JWT token.
 
 ## Auth0 User permissions
-
----
-
-User1. manager : all permissions  
+#### User1. manager : all permissions  
 `get:question` - Get the list and detail of questions on the board.
 `post:question` - Write the question.
 `put:question` - Edit existed questions.
@@ -54,7 +42,7 @@ User1. manager : all permissions
 `delete:answer` - Delete existed answers.
 `vote:answer` - Vote existed answers.  
 
-User2. boarder2 : All permissions to the question and get:answer, vote:answer  
+#### User2. boarder2 : All permissions to the question and get:answer, vote:answer  
 `get:question` - Get the list and detail of questions on the board.
 `post:question` - Write the question.
 `put:question` - Edit existed questions.
@@ -64,8 +52,6 @@ User2. boarder2 : All permissions to the question and get:answer, vote:answer
 `vote:answer` - Vote existed answers.  
 
 ## API endpoints
-
----
 
 ### GET '/question'
 - Get the list of questions on the board
@@ -189,7 +175,8 @@ Sample response:
 - Returns: a JSON object with success status true when new question was successfully added into the database.  
 
 Sample curl request:  
-`curl -X POST http://127.0.0.1:5000/question -H "Authorization: Bearer <ACCESS_TOKEN>" -H "Content-Type: application/json" -d '{"subject": "Test Subject", "content": "Test Content"}'`
+`curl -X POST http://127.0.0.1:5000/question -H "Authorization: Bearer <ACCESS_TOKEN>" -H "Content-Type: application/json" -d '{"subject": "Test Subject", "content": "Test Content"}'`  
+
 Sample response:  
 ```
 {
@@ -213,7 +200,8 @@ Sample response:
 - Returns: a JSON object with success status true when the question information was successfully updated into the database.  
 
 Sample curl request:  
-`curl -X PUT http://127.0.0.1:5000/question -H "Authorization: Bearer <ACCESS_TOKEN>" -H "Content-Type: application/json" -d '{"subject": "Update Subject", "content": "Update Content"}'`
+`curl -X PUT http://127.0.0.1:5000/question -H "Authorization: Bearer <ACCESS_TOKEN>" -H "Content-Type: application/json" -d '{"subject": "Update Subject", "content": "Update Content"}'`  
+
 Sample response:  
 ```
 {
@@ -236,7 +224,8 @@ Sample response:
 - Returns: a JSON object with success status true when the question was successfully deleted from the database.  
 
 Sample curl request:  
-`curl -X DELETE http://127.0.0.1:5000/question -H "Authorization: Bearer <ACCESS_TOKEN>"`
+`curl -X DELETE http://127.0.0.1:5000/question -H "Authorization: Bearer <ACCESS_TOKEN>"`  
+
 Sample response:  
 ```
 {
@@ -249,7 +238,8 @@ Sample response:
 - Returns: a JSON object with answer inofermation.  
 
 Sample curl request:  
-`curl -X GET http://127.0.0.1:5000/question/1/answer/2`
+`curl -X GET http://127.0.0.1:5000/question/1/answer/2`  
+
 Sample response:  
 ```
 {
@@ -271,7 +261,7 @@ Sample response:
 - Returns: a JSON object with success status true when the answer information was successfully added into the database.  
 
 Sample curl request:  
-`curl -X POST http://127.0.0.1:5000/question/1/answer -H "Authorization: Bearer {ACCESS_TOKEN}" -H "Content-Type: application/json" -d '{"content":"This is an example answer."}'`
+`curl -X POST http://127.0.0.1:5000/question/1/answer -H "Authorization: Bearer {ACCESS_TOKEN}" -H "Content-Type: application/json" -d '{"content":"This is an example answer."}'`  
 Sample response:  
 ```
 {
@@ -293,7 +283,7 @@ Sample response:
 - Returns: a JSON object with success status true when the answer information was successfully updated into the database.  
 
 Sample curl request:  
-`curl -X PUT http://127.0.0.1:5000/question/1/answer/3 -H "Authorization: Bearer {ACCESS_TOKEN}" -H "Content-Type: application/json" -d '{"content":"Update Content"}'`
+`curl -X PUT http://127.0.0.1:5000/question/1/answer/3 -H "Authorization: Bearer {ACCESS_TOKEN}" -H "Content-Type: application/json" -d '{"content":"Update Content"}'`  
 Sample response:  
 ```
 {
@@ -315,7 +305,7 @@ Sample response:
 - Returns: a JSON object with success status true when the answer information was successfully deleted into the database.  
 
 Sample curl request:  
-`curl -X PUT http://127.0.0.1:5000/question/1/answer/3 -H "Authorization: Bearer {ACCESS_TOKEN}"`
+`curl -X PUT http://127.0.0.1:5000/question/1/answer/3 -H "Authorization: Bearer {ACCESS_TOKEN}"`  
 Sample response:  
 ```
 {
@@ -324,6 +314,5 @@ Sample response:
 ```
 
 ## Testing
----
 The testing of all endpoints was implemented with unittest. The command line interface run the test file:  
 `python test_pybo.py`
